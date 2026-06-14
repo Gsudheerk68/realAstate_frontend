@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlotLine — Land, Plots &amp; Buildings Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Auth form styles */
+    .auth-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--ink-1);
+      margin-bottom: 28px;
+    }
+    .auth-tab {
+      padding: 10px 28px;
+      background: none;
+      border: none;
+      font: 600 15px/1 var(--font-body);
+      color: var(--ink-3);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
+    }
+    .auth-tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--clay);
+    }
+    .auth-tab:hover { color: var(--ink); }
+
+    .auth-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .auth-form .field-full {
+      grid-column: 1 / -1;
+    }
+    .auth-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+    @media (max-width: 600px) {
+      .auth-cards { grid-template-columns: 1fr; }
+      .auth-form { grid-template-columns: 1fr; }
+    }
+    .auth-card {
+      background: var(--paper);
+      border: 1.5px solid var(--ink-1);
+      border-radius: 12px;
+      padding: 28px 24px;
+    }
+    .auth-card .stamp-no {
+      font: 600 11px/1 var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--ink-3);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .auth-card h2 { margin: 0 0 6px; font-size: 1.25rem; }
+    .auth-card p { margin: 0 0 18px; color: var(--ink-3); font-size: .93rem; }
+    .auth-switcher {
+      margin-top: 14px;
+      text-align: center;
+      font-size: .88rem;
+      color: var(--ink-3);
+    }
+    .auth-switcher button {
+      background: none;
+      border: none;
+      color: var(--clay);
+      font: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">Plot<span>Line</span></span>
+      <span class="brand-tag">Survey &amp; Sale Register</span>
+    </a>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Plots · Land · Buildings · Commercial Space</p>
+    <h1>Every plot has a story. List it, or find it.</h1>
+    <p class="lede">PlotLine connects people selling land, plots and buildings with people looking to buy — one simple register, two ways in.</p>
+    <p class="coords">15.4839° N · 78.0376° E — RK Valley Survey Zone</p>
+  </section>
+
+  <!-- Auth Cards -->
+  <div class="auth-cards">
+
+    <!-- Buyer Card -->
+    <div class="auth-card">
+      <span class="stamp-no">Entry · 01 / Buyer</span>
+      <h2>I'm looking to buy</h2>
+      <p>Browse verified listings, filter by type, location and budget, and save the ones you like.</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup', 'buyer')">Sign up</button>
+        <button class="auth-tab" id="tabLogin" onclick="switchTab('login', 'buyer')">Log in</button>
+      </div>
+
+      <!-- Buyer Signup Form -->
+      <div id="buyerSignupForm" class="auth-form">
+        <div class="field field-full">
+          <label for="bSignupName">Full name</label>
+          <input type="text" id="bSignupName" placeholder="e.g. R. Anitha" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="bSignupEmail">Email</label>
+          <input type="email" id="bSignupEmail" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="bSignupPhone">Phone</label>
+          <input type="tel" id="bSignupPhone" placeholder="10-digit mobile">
+        </div>
+        <div class="field field-full">
+          <label for="bSignupPassword">Password</label>
+          <input type="password" id="bSignupPassword" placeholder="Min. 6 characters">
+        </div>
+        <div class="field field-full">
+          <button class="btn btn-clay btn-full" onclick="doSignup('buyer')">Create Buyer Account</button>
+        </div>
+      </div>
+
+      <!-- Buyer Login Form -->
+      <div id="buyerLoginForm" class="auth-form" style="display:none">
+        <div class="field field-full">
+          <label for="bLoginEmail">Email</label>
+          <input type="email" id="bLoginEmail" placeholder="you@example.com">
+        </div>
+        <div class="field field-full">
+          <label for="bLoginPassword">Password</label>
+          <input type="password" id="bLoginPassword" placeholder="Your password">
+        </div>
+        <div class="field field-full">
+          <button class="btn btn-clay btn-full" onclick="doLogin('buyer')">Login as Buyer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seller Card -->
+    <div class="auth-card">
+      <span class="stamp-no">Entry · 02 / Seller</span>
+      <h2>I'm looking to sell</h2>
+      <p>Post your plot, land or building for sale with photos, price and details — and manage everything from one dashboard.</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="sTabSignup" onclick="switchTab('signup', 'seller')">Sign up</button>
+        <button class="auth-tab" id="sTabLogin" onclick="switchTab('login', 'seller')">Log in</button>
+      </div>
+
+      <!-- Seller Signup Form -->
+      <div id="sellerSignupForm" class="auth-form">
+        <div class="field field-full">
+          <label for="sSignupName">Full name</label>
+          <input type="text" id="sSignupName" placeholder="e.g. K. Srinivasulu" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="sSignupEmail">Email</label>
+          <input type="email" id="sSignupEmail" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="sSignupPhone">Phone</label>
+          <input type="tel" id="sSignupPhone" placeholder="10-digit mobile">
+        </div>
+        <div class="field field-full">
+          <label for="sSignupPassword">Password</label>
+          <input type="password" id="sSignupPassword" placeholder="Min. 6 characters">
+        </div>
+        <div class="field field-full">
+          <button class="btn btn-sage btn-full" onclick="doSignup('seller')">Create Seller Account</button>
+        </div>
+      </div>
+
+      <!-- Seller Login Form -->
+      <div id="sellerLoginForm" class="auth-form" style="display:none">
+        <div class="field field-full">
+          <label for="sLoginEmail">Email</label>
+          <input type="email" id="sLoginEmail" placeholder="you@example.com">
+        </div>
+        <div class="field field-full">
+          <label for="sLoginPassword">Password</label>
+          <input type="password" id="sLoginPassword" placeholder="Your password">
+        </div>
+        <div class="field field-full">
+          <button class="btn btn-sage btn-full" onclick="doLogin('seller')">Login as Seller</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /auth-cards -->
+
+  <footer class="site-footer">PlotLine · Real estate register with persistent database &amp; JWT auth</footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    // Redirect if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isAuthenticated()) {
+        const user = getUser();
+        if (user && user.role) {
+          window.location.href = user.role === 'buyer' ? 'buyer.html' : 'seller.html';
+        }
+      }
+
+      // Enter key on password fields
+      ['bSignupPassword','bLoginPassword','sSignupPassword','sLoginPassword'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            const role = id.startsWith('b') ? 'buyer' : 'seller';
+            const isLogin = id.includes('Login');
+            isLogin ? doLogin(role) : doSignup(role);
+          }
+        });
+      });
+    });
+
+    function switchTab(tab, role) {
+      const prefix = role === 'buyer' ? 'b' : 's';
+      const tabPrefix = role === 'buyer' ? '' : 's';
+      const signupTabId = role === 'buyer' ? 'tabSignup' : 'sTabSignup';
+      const loginTabId  = role === 'buyer' ? 'tabLogin'  : 'sTabLogin';
+      const signupFormId = role === 'buyer' ? 'buyerSignupForm'  : 'sellerSignupForm';
+      const loginFormId  = role === 'buyer' ? 'buyerLoginForm'   : 'sellerLoginForm';
+
+      document.getElementById(signupTabId).classList.toggle('active', tab === 'signup');
+      document.getElementById(loginTabId).classList.toggle('active',  tab === 'login');
+      document.getElementById(signupFormId).style.display = tab === 'signup' ? 'grid' : 'none';
+      document.getElementById(loginFormId).style.display  = tab === 'login'  ? 'grid' : 'none';
+    }
+
+    async function doSignup(role) {
+      const prefix = role === 'buyer' ? 'b' : 's';
+      const name     = document.getElementById(prefix + 'SignupName')?.value.trim();
+      const email    = document.getElementById(prefix + 'SignupEmail')?.value.trim();
+      const phone    = document.getElementById(prefix + 'SignupPhone')?.value.trim();
+      const password = document.getElementById(prefix + 'SignupPassword')?.value;
+
+      if (!name || !email || !phone || !password) {
+        showToast('Please fill in all fields'); return;
+      }
+      if (!/^[\w\.-]+@[\w\.-]+\.\w+$/.test(email)) {
+        showToast('Please enter a valid email'); return;
+      }
+      if (!/^\d{10}$/.test(phone.replace(/\D/g, ''))) {
+        showToast('Please enter a valid 10-digit phone'); return;
+      }
+      if (password.length < 6) {
+        showToast('Password must be at least 6 characters'); return;
+      }
+
+      try {
+        const response = await authAPI.signup(name, email, phone, password, role);
+        setAuthToken(response.token);
+        setUser({ id: response.user.id, name: response.user.name, email: response.user.email, role: response.user.role });
+        showToast('Account created! Redirecting…');
+        setTimeout(() => { window.location.href = role === 'buyer' ? 'buyer.html' : 'seller.html'; }, 1200);
+      } catch(err) { console.error(err); }
+    }
+
+    async function doLogin(role) {
+      const prefix = role === 'buyer' ? 'b' : 's';
+      const email    = document.getElementById(prefix + 'LoginEmail')?.value.trim();
+      const password = document.getElementById(prefix + 'LoginPassword')?.value;
+
+      if (!email || !password) { showToast('Please enter email and password'); return; }
+
+      try {
+        const response = await authAPI.login(email, password);
+        setAuthToken(response.token);
+        setUser({ id: response.user.id, name: response.user.name, email: response.user.email, role: response.user.role });
+        showToast('Logged in! Redirecting…');
+        setTimeout(() => { window.location.href = response.user.role === 'buyer' ? 'buyer.html' : 'seller.html'; }, 1200);
+      } catch(err) { console.error(err); }
+    }
+  </script>
+</body>
+</html>

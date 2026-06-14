@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlotLine — Seller Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">Plot<span>Line</span></span>
+      <span class="brand-tag">Survey &amp; Sale Register</span>
+    </a>
+    <div class="header-meta">
+      <span class="role-pill seller">Seller · <span id="userName">—</span></span>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <p class="eyebrow">Dashboard</p>
+    <h1 style="margin-bottom:22px;">Your listings register</h1>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">Total listings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statActive">0</div>
+        <div class="stat-label">Available</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statSold">0</div>
+        <div class="stat-label">Sold</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statViews">0</div>
+        <div class="stat-label">Total views</div>
+      </div>
+    </div>
+
+    <div class="layout-two-col">
+
+      <div class="panel">
+        <h2 id="formTitle">Post a new property</h2>
+        <p class="panel-sub" id="formSub">Fill in the survey details below — your listing appears instantly for buyers.</p>
+
+        <form id="listingForm">
+          <input type="hidden" id="editId">
+
+          <div class="field">
+            <label for="title">Title</label>
+            <input type="text" id="title" placeholder="e.g. Corner Plot, Phase 2 Layout" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="type">Property type</label>
+              <select id="type" required>
+                <option value="Plot">Plot</option>
+                <option value="Land">Land</option>
+                <option value="Agricultural Land">Agricultural Land</option>
+                <option value="Residential Building">Residential Building</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Commercial Space">Commercial Space</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="price">Price (₹)</label>
+              <input type="number" id="price" placeholder="e.g. 1850000" min="0" step="1000" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="e.g. Vidyanagar, Kurnool" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field unit-row">
+              <div>
+                <label for="area">Area</label>
+                <input type="number" id="area" placeholder="e.g. 240" min="0" step="0.01" required>
+              </div>
+              <div>
+                <label for="areaUnit">Unit</label>
+                <select id="areaUnit">
+                  <option value="sq.ft">sq.ft</option>
+                  <option value="sq.yd">sq.yd</option>
+                  <option value="cents">cents</option>
+                  <option value="acres">acres</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="facing">Facing</label>
+              <select id="facing">
+                <option value="">Not specified</option>
+                <option>East</option>
+                <option>West</option>
+                <option>North</option>
+                <option>South</option>
+                <option>North-East</option>
+                <option>North-West</option>
+                <option>South-East</option>
+                <option>South-West</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" placeholder="Approval status, amenities, road width, nearby landmarks..."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="images">Photos (up to 4)</label>
+            <input type="file" id="images" accept="image/*" multiple>
+            <div class="image-preview-row" id="imagePreview"></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="sellerPhone">Contact phone</label>
+              <input type="tel" id="sellerPhone" placeholder="10-digit mobile number" required>
+            </div>
+            <div class="field">
+              <label for="sellerEmail">Contact email</label>
+              <input type="email" id="sellerEmail" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button type="submit" class="btn btn-sage btn-full" id="submitBtn">Publish listing</button>
+            <button type="button" class="btn btn-ghost" id="cancelEdit" style="display:none;">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>My listings</h2>
+        <p class="panel-sub">Edit details, mark properties as sold, or remove a listing entirely.</p>
+        <div class="manage-list" id="manageList"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="site-footer">PlotLine · Real estate register with persistent database &amp; JWT auth</footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/seller.js"></script>
+</body>
+</html>

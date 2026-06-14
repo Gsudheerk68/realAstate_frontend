@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlotLine — Browse Properties</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">Plot<span>Line</span></span>
+      <span class="brand-tag">Survey &amp; Sale Register</span>
+    </a>
+    <div class="header-meta">
+      <span class="role-pill buyer">Buyer · <span id="userName">—</span></span>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="tabs">
+      <button class="tab active" data-tab="all">All Listings</button>
+      <button class="tab" data-tab="favourites">My Favourites <span id="favCount"></span></button>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-grid">
+        <div class="field">
+          <label for="searchInput">Search</label>
+          <input type="text" id="searchInput" placeholder="Title, location, description...">
+        </div>
+        <div class="field">
+          <label for="typeFilter">Type</label>
+          <select id="typeFilter">
+            <option value="">All types</option>
+            <option value="Plot">Plot</option>
+            <option value="Land">Land</option>
+            <option value="Agricultural Land">Agricultural Land</option>
+            <option value="Residential Building">Residential Building</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Commercial Space">Commercial Space</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="minPrice">Min price (₹)</label>
+          <input type="number" id="minPrice" placeholder="0" min="0" step="10000">
+        </div>
+        <div class="field">
+          <label for="maxPrice">Max price (₹)</label>
+          <input type="number" id="maxPrice" placeholder="Any" min="0" step="10000">
+        </div>
+        <div class="field">
+          <label for="sortSelect">Sort by</label>
+          <select id="sortSelect">
+            <option value="newest">Newest first</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+            <option value="area">Area: largest first</option>
+          </select>
+        </div>
+        <div class="field">
+          <button class="btn btn-ghost btn-full" id="clearFilters">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-bar">
+      <span class="results-count" id="resultsCount">— listings</span>
+      <span class="results-count" id="hideSoldNote"></span>
+    </div>
+
+    <div class="listing-grid" id="listingGrid"></div>
+
+  </main>
+
+  <footer class="site-footer">PlotLine · Real estate register with persistent database &amp; JWT auth</footer>
+
+  <!-- Detail modal -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      <div class="modal-media" id="modalMedia"></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/buyer.js"></script>
+</body>
+</html>

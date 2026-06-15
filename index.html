@@ -222,7 +222,7 @@
       if (isAuthenticated()) {
         const user = getUser();
         if (user && user.role) {
-          window.location.href = user.role === 'buyer' ? 'buyer.html' : 'seller.html';
+          window.location.href = user.role === 'admin' ? 'admin.html' : user.role === 'buyer' ? 'buyer.html' : 'seller.html';
         }
       }
 
@@ -278,7 +278,10 @@
         setAuthToken(response.token);
         setUser({ id: response.user.id, name: response.user.name, email: response.user.email, role: response.user.role });
         showToast('Account created! Redirecting…');
-        setTimeout(() => { window.location.href = role === 'buyer' ? 'buyer.html' : 'seller.html'; }, 1200);
+        setTimeout(() => {
+  const r = response.user.role;
+  window.location.href = r === 'admin' ? 'admin.html' : r === 'buyer' ? 'buyer.html' : 'seller.html';
+}, 1200);
       } catch(err) { console.error(err); }
     }
 
@@ -294,7 +297,10 @@
         setAuthToken(response.token);
         setUser({ id: response.user.id, name: response.user.name, email: response.user.email, role: response.user.role });
         showToast('Logged in! Redirecting…');
-        setTimeout(() => { window.location.href = response.user.role === 'buyer' ? 'buyer.html' : 'seller.html'; }, 1200);
+      setTimeout(() => {
+  const r = response.user.role;
+  window.location.href = r === 'admin' ? 'admin.html' : r === 'buyer' ? 'buyer.html' : 'seller.html';
+}, 1200);
       } catch(err) { console.error(err); }
     }
   </script>

@@ -4,12 +4,19 @@
 
 let currentAuthTab = 'signup';
 
+// Returns the dashboard page a given role should land on
+function roleHome(role) {
+  if (role === 'admin') return 'admin.html';
+  if (role === 'buyer') return 'buyer.html';
+  return 'seller.html';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // If already logged in, redirect
   if (isAuthenticated()) {
     const user = getUser();
     if (user && user.role) {
-      window.location.href = user.role === 'buyer' ? 'buyer.html' : 'seller.html';
+      window.location.href = roleHome(user.role);
       return;
     }
   }
@@ -102,7 +109,7 @@ async function handleSignup() {
 
     showToast('Account created successfully!');
     setTimeout(() => {
-      window.location.href = role === 'buyer' ? 'buyer.html' : 'seller.html';
+      window.location.href = roleHome(role);
     }, 1500);
   } catch (err) {
     console.error('Signup error:', err);
@@ -136,7 +143,7 @@ async function handleLogin() {
 
     showToast('Logged in successfully!');
     setTimeout(() => {
-      window.location.href = response.user.role === 'buyer' ? 'buyer.html' : 'seller.html';
+      window.location.href = roleHome(response.user.role);
     }, 1500);
   } catch (err) {
     console.error('Login error:', err);

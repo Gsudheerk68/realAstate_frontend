@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlotLine — Admin Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">Plot<span>Line</span></span>
+      <span class="brand-tag">Admin Console</span>
+    </a>
+    <div class="header-meta">
+      <span class="role-pill admin">Admin · <span id="userName">—</span></span>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <p class="eyebrow">Control center</p>
+    <h1 style="margin-bottom:22px;">Who's using PlotLine</h1>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="users">Users</button>
+      <button class="tab" data-tab="listings">Listings</button>
+      <button class="tab" data-tab="activity">Activity log</button>
+    </div>
+
+    <!-- ============================================================
+         OVERVIEW
+         ============================================================ -->
+    <section class="tab-panel active" id="panel-overview">
+
+      <div class="stats-grid-admin" id="overviewStats">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="layout-two-col">
+        <div class="panel">
+          <h2>Recent signups</h2>
+          <p class="panel-sub">Newest accounts created on PlotLine.</p>
+          <div class="manage-list" id="recentSignups"></div>
+        </div>
+        <div class="panel">
+          <h2>Recent activity</h2>
+          <p class="panel-sub">The latest actions across all users.</p>
+          <div class="manage-list" id="recentActivity"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         USERS
+         ============================================================ -->
+    <section class="tab-panel" id="panel-users">
+
+      <div class="toolbar">
+        <div class="toolbar-grid toolbar-grid-admin">
+          <div class="field">
+            <label for="userSearch">Search</label>
+            <input type="text" id="userSearch" placeholder="Name, email, or phone">
+          </div>
+          <div class="field">
+            <label for="userRoleFilter">Role</label>
+            <select id="userRoleFilter">
+              <option value="">All roles</option>
+              <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="userStatusFilter">Status</label>
+            <select id="userStatusFilter">
+              <option value="">All statuses</option>
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn btn-clay btn-full" id="userFilterBtn">Apply filters</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-bar">
+        <span class="results-count" id="usersCount">0 users</span>
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Activity</th>
+              <th>Joined</th>
+              <th>Listings / Saves</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="usersPagination"></div>
+
+    </section>
+
+    <!-- ============================================================
+         LISTINGS
+         ============================================================ -->
+    <section class="tab-panel" id="panel-listings">
+
+      <div class="toolbar">
+        <div class="toolbar-grid toolbar-grid-admin">
+          <div class="field">
+            <label for="listingSearch">Search</label>
+            <input type="text" id="listingSearch" placeholder="Title, location, ID, or seller">
+          </div>
+          <div class="field">
+            <label for="listingStatusFilter">Status</label>
+            <select id="listingStatusFilter">
+              <option value="">All statuses</option>
+              <option value="Available">Available</option>
+              <option value="Sold">Sold</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="listingTypeFilter">Type</label>
+            <select id="listingTypeFilter">
+              <option value="">All types</option>
+              <option value="Plot">Plot</option>
+              <option value="Land">Land</option>
+              <option value="Agricultural Land">Agricultural Land</option>
+              <option value="Residential Building">Residential Building</option>
+              <option value="Apartment">Apartment</option>
+              <option value="Commercial Space">Commercial Space</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn btn-clay btn-full" id="listingFilterBtn">Apply filters</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-bar">
+        <span class="results-count" id="listingsCount">0 listings</span>
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Location</th>
+              <th>Seller</th>
+              <th>Status</th>
+              <th>Views</th>
+              <th>Posted</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="listingsTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="listingsPagination"></div>
+
+    </section>
+
+    <!-- ============================================================
+         ACTIVITY LOG
+         ============================================================ -->
+    <section class="tab-panel" id="panel-activity">
+
+      <div class="toolbar">
+        <div class="toolbar-grid toolbar-grid-admin">
+          <div class="field">
+            <label for="activityActionFilter">Action</label>
+            <select id="activityActionFilter">
+              <option value="">All actions</option>
+              <option value="login">Login</option>
+              <option value="logout">Logout</option>
+              <option value="view_listing">View listing</option>
+              <option value="save_favorite">Save favorite</option>
+              <option value="unsave_favorite">Unsave favorite</option>
+              <option value="post_listing">Post listing</option>
+              <option value="edit_listing">Edit listing</option>
+              <option value="delete_listing">Delete listing</option>
+              <option value="mark_sold">Mark sold</option>
+              <option value="contact_seller">Contact seller</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="activityRoleFilter">Role</label>
+            <select id="activityRoleFilter">
+              <option value="">All roles</option>
+              <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn btn-clay btn-full" id="activityFilterBtn">Apply filters</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-bar">
+        <span class="results-count" id="activityCount">0 events</span>
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>User</th>
+              <th>Role</th>
+              <th>Action</th>
+              <th>Details</th>
+              <th>IP address</th>
+            </tr>
+          </thead>
+          <tbody id="activityTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="activityPagination"></div>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer">PlotLine · Admin console</footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -129,3 +129,45 @@ const activitiesAPI = {
   getSellerStats: () =>
     apiCall('GET', '/activities/seller-stats')
 };
+
+// ============================================================
+// Admin API
+// ============================================================
+
+const adminAPI = {
+  getStats: () =>
+    apiCall('GET', '/admin/stats'),
+
+  getUsers: (filters = {}) => {
+    const params = new URLSearchParams(filters);
+    const query = params.toString() ? `?${params}` : '';
+    return apiCall('GET', `/admin/users${query}`);
+  },
+
+  setUserStatus: (id, isActive) =>
+    apiCall('PUT', `/admin/users/${id}/status`, { isActive }),
+
+  setUserRole: (id, role) =>
+    apiCall('PUT', `/admin/users/${id}/role`, { role }),
+
+  deleteUser: (id) =>
+    apiCall('DELETE', `/admin/users/${id}`),
+
+  getListings: (filters = {}) => {
+    const params = new URLSearchParams(filters);
+    const query = params.toString() ? `?${params}` : '';
+    return apiCall('GET', `/admin/listings${query}`);
+  },
+
+  setListingStatus: (id, status) =>
+    apiCall('PUT', `/admin/listings/${id}/status`, { status }),
+
+  deleteListing: (id) =>
+    apiCall('DELETE', `/admin/listings/${id}`),
+
+  getActivities: (filters = {}) => {
+    const params = new URLSearchParams(filters);
+    const query = params.toString() ? `?${params}` : '';
+    return apiCall('GET', `/admin/activities${query}`);
+  }
+};

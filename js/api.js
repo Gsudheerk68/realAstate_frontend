@@ -2,7 +2,7 @@
 // PlotLine API Client
 // ============================================================
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://realastate-backend.onrender.com/api';
 
 // ============================================================
 // Token Management

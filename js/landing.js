@@ -1,4 +1,4 @@
-// js/landing.js: role choice, then login / sign up for the chosen role.
+// js/landing.js (v3): role choice, then login / sign up for the chosen role.
 // Uses the helpers your app already has (authAPI, setAuthToken, setUser, isAuthenticated, getUser),
 // so the login is stored exactly the way buyer.html, seller.html and admin.html expect it.
 (function () {

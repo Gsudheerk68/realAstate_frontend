@@ -1,7 +1,7 @@
 // js/landing.js: role choice, then login / sign up for the chosen role.
 (function () {
   // ---------- Configure for your project ----------
-  const API_BASE = 'https://realastate-backend.onrender.com/api';        // use your Render backend URL in production
+  const API_BASE = 'https://realastate-backend.onrender.com';        // use your Render backend URL in production
   const ENDPOINTS = {
     login: '/api/auth/login',
     register: '/api/auth/register',

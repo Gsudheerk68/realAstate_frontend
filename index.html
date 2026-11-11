@@ -89,8 +89,8 @@
           <label for="signupEmail">Email</label>
           <input id="signupEmail" name="email" type="email" autocomplete="email" required>
 
-          <label for="signupPhone">Phone number <span class="opt" id="phoneHint">(optional)</span></label>
-          <input id="signupPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel">
+          <label for="signupPhone">Phone number <span class="opt">(10 digits)</span></label>
+          <input id="signupPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
 
           <label for="signupPassword">Password</label>
           <div class="pw">
@@ -107,6 +107,10 @@
     </section>
   </main>
 
+  <!-- 1) Keep the SAME <script> tags your old index.html used (the files that define authAPI,
+          setAuthToken, setUser, isAuthenticated, getUser), but NOT js/auth.js. Example: -->
+  <script src="js/api.js"></script>
+  <!-- 2) Then this page's script: -->
   <script src="js/landing.js"></script>
 </body>
 </html>

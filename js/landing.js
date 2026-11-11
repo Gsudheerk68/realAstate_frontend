@@ -2,6 +2,12 @@
 // Uses the helpers your app already has (authAPI, setAuthToken, setUser, isAuthenticated, getUser),
 // so the login is stored exactly the way buyer.html, seller.html and admin.html expect it.
 (function () {
+    // If setUser() isn't defined on this page, define it. Your logout code removes 'plotline_user', so that is the key your dashboards read.
+  if (typeof setUser !== 'function') {
+    window.setUser = function (user) {
+      localStorage.setItem('plotline_user', JSON.stringify(user));
+    };
+  }
   // Where each role lands after login (same rule as your old auth.js).
   function roleHome(role) {
     if (role === 'admin') return 'admin.html';

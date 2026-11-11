@@ -1,29 +1,24 @@
 // js/landing.js: role choice, then login / sign up for the chosen role.
+// Uses the helpers your app already has (authAPI, setAuthToken, setUser, isAuthenticated, getUser),
+// so the login is stored exactly the way buyer.html, seller.html and admin.html expect it.
 (function () {
-  // ---------- Configure for your project ----------
-  const API_BASE = 'https://realastate-backend.onrender.com';        // use your Render backend URL in production
-  const ENDPOINTS = {
-    login: '/api/auth/login',
-    register: '/api/auth/register',
-  };
-  // Where each role goes after login. Match the pages in your repo.
-  const ROLE_PAGES = { buyer: 'buyer.html', seller: 'seller.html', admin: 'admin.html' };
-  // Use the same localStorage keys the rest of your app already reads.
-  const STORAGE = { token: 'token', user: 'user' };
-  // -------------------------------------------------
+  // Where each role lands after login (same rule as your old auth.js).
+  function roleHome(role) {
+    if (role === 'admin') return 'admin.html';
+    if (role === 'buyer') return 'buyer.html';
+    return 'seller.html';
+  }
 
   const ROLES = {
     buyer: {
       title: 'Buyer account',
       headline: 'Find a plot that fits.',
       sub: 'Search listings by location and contact sellers directly.',
-      phoneRequired: false,
     },
     seller: {
       title: 'Seller account',
       headline: 'Put your property in front of buyers.',
       sub: 'List properties, manage enquiries and respond in real time.',
-      phoneRequired: true,
     },
   };
 
@@ -34,7 +29,20 @@
   const message = $('formMessage');
   let role = null;
 
-  
+  function helpersReady() {
+    return typeof authAPI !== 'undefined' && typeof setAuthToken === 'function' && typeof setUser === 'function';
+  }
+
+  // Already logged in? Go to the right dashboard (same check your old page used).
+  try {
+    if (typeof isAuthenticated === 'function' && isAuthenticated()) {
+      const user = typeof getUser === 'function' ? getUser() : null;
+      if (user && user.role) {
+        window.location.replace(roleHome(user.role));
+        return;
+      }
+    }
+  } catch (_) { /* ignore bad stored data */ }
 
   function showMessage(text, type) {
     message.textContent = text;
@@ -50,8 +58,6 @@
     $('formTitle').textContent = cfg.title;
     $('mapHeadline').textContent = cfg.headline;
     $('mapSub').textContent = cfg.sub;
-    $('phoneHint').textContent = cfg.phoneRequired ? '(required)' : '(optional)';
-    $('signupPhone').required = cfg.phoneRequired;
     stepRole.hidden = true;
     stepForm.hidden = false;
     history.replaceState(null, '', '#' + role);
@@ -78,58 +84,59 @@
     clearMessage();
   }
 
-  async function post(path, body) {
-    const res = await fetch(API_BASE + path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    let data = {};
-    try { data = await res.json(); } catch (_) { /* non-JSON response */ }
-    return { ok: res.ok, data };
+  function markInvalid(input, bad) {
+    input.setAttribute('aria-invalid', String(bad));
+    return !bad;
   }
 
-  function validate(form) {
-    let valid = true;
-    form.querySelectorAll('input').forEach((input) => {
-      const bad = !input.checkValidity();
-      input.setAttribute('aria-invalid', String(bad));
-      if (bad) valid = false;
-    });
-    if (!valid) showMessage('Please fill in all required fields correctly.', 'error');
-    return valid;
+  const EMAIL_RE = /^[\w.-]+@[\w.-]+\.\w+$/;
+
+  function errorText(err, fallback) {
+    return (err && err.message && err.message !== 'Failed to fetch') ? err.message : fallback;
   }
 
-  function finishLogin(data) {
-    const user = data.user || {};
-    if (user.role && user.role !== role) {
-      showMessage(`This is a ${user.role} account. Go back and choose "${user.role}" to log in.`, 'error');
-      return;
-    }
-    localStorage.setItem(STORAGE.token, data.token);
-    localStorage.setItem(STORAGE.user, JSON.stringify(user.role ? user : { ...user, role }));
-    window.location.href = ROLE_PAGES[role];
+  function saveLogin(response) {
+    setAuthToken(response.token);
+    setUser({
+      id: response.user.id,
+      name: response.user.name,
+      email: response.user.email,
+      role: response.user.role,
+    });
   }
 
   async function onLogin(e) {
     e.preventDefault();
     clearMessage();
-    if (!validate(loginForm)) return;
+    if (!helpersReady()) {
+      showMessage('The app scripts did not load. Check the script tags in index.html (see the notes).', 'error');
+      return;
+    }
+    const email = $('loginEmail').value.trim();
+    const password = $('loginPassword').value;
+    const okEmail = markInvalid($('loginEmail'), !EMAIL_RE.test(email));
+    const okPass = markInvalid($('loginPassword'), !password);
+    if (!okEmail || !okPass) {
+      showMessage('Enter a valid email and your password.', 'error');
+      return;
+    }
+
     const btn = $('loginSubmit');
     btn.disabled = true;
     try {
-      const { ok, data } = await post(ENDPOINTS.login, {
-        email: $('loginEmail').value.trim(),
-        password: $('loginPassword').value,
-        role,
-      });
-      if (!ok || !data.token) {
-        showMessage(data.message || data.error || 'Email or password is incorrect.', 'error');
-      } else {
-        finishLogin(data);
+      const response = await authAPI.login(email, password);
+      const actual = response.user && response.user.role;
+      // Admins may log in from either screen; buyers and sellers must use their own.
+      if (actual && actual !== role && actual !== 'admin') {
+        showMessage(`This is a ${actual} account. Go back, choose "${actual}" and log in again.`, 'error');
+        return;
       }
-    } catch (_) {
-      showMessage('Could not reach the server. Check your connection and try again.', 'error');
+      saveLogin(response);
+      showMessage('Logged in. Taking you to your dashboard…', 'ok');
+      setTimeout(() => { window.location.href = roleHome(actual || role); }, 600);
+    } catch (err) {
+      console.error('Login error:', err);
+      showMessage(errorText(err, 'Email or password is incorrect, or the server is not reachable.'), 'error');
     } finally {
       btn.disabled = false;
     }
@@ -138,29 +145,36 @@
   async function onSignup(e) {
     e.preventDefault();
     clearMessage();
-    if (!validate(signupForm)) return;
+    if (!helpersReady()) {
+      showMessage('The app scripts did not load. Check the script tags in index.html (see the notes).', 'error');
+      return;
+    }
+    const name = $('signupName').value.trim();
+    const email = $('signupEmail').value.trim();
+    const phone = $('signupPhone').value.trim();
+    const password = $('signupPassword').value;
+
+    const checks = [
+      markInvalid($('signupName'), !name),
+      markInvalid($('signupEmail'), !EMAIL_RE.test(email)),
+      markInvalid($('signupPhone'), !/^\d{10}$/.test(phone.replace(/\D/g, ''))),
+      markInvalid($('signupPassword'), password.length < 6),
+    ];
+    if (checks.includes(false)) {
+      showMessage('Check your details: a valid email, a 10-digit phone number and a password of at least 6 characters.', 'error');
+      return;
+    }
+
     const btn = $('signupSubmit');
     btn.disabled = true;
     try {
-      const { ok, data } = await post(ENDPOINTS.register, {
-        name: $('signupName').value.trim(),
-        email: $('signupEmail').value.trim(),
-        phone: $('signupPhone').value.trim(),
-        password: $('signupPassword').value,
-        role,
-      });
-      if (!ok) {
-        showMessage(data.message || data.error || 'Could not create the account. Try a different email.', 'error');
-      } else if (data.token) {
-        finishLogin(data);
-      } else {
-        $('loginEmail').value = $('signupEmail').value.trim();
-        setMode('login');
-        showMessage('Account created. Log in to continue.', 'ok');
-        $('loginPassword').focus();
-      }
-    } catch (_) {
-      showMessage('Could not reach the server. Check your connection and try again.', 'error');
+      const response = await authAPI.signup(name, email, phone, password, role);
+      saveLogin(response);
+      showMessage('Account created. Taking you to your dashboard…', 'ok');
+      setTimeout(() => { window.location.href = roleHome(role); }, 800);
+    } catch (err) {
+      console.error('Signup error:', err);
+      showMessage(errorText(err, 'Could not create the account. Try a different email or try again.'), 'error');
     } finally {
       btn.disabled = false;
     }

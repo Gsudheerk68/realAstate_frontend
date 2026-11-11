@@ -34,14 +34,7 @@
   const message = $('formMessage');
   let role = null;
 
-  // Already logged in? Skip straight to the right page.
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE.user) || 'null');
-    if (localStorage.getItem(STORAGE.token) && saved && ROLE_PAGES[saved.role]) {
-      window.location.replace(ROLE_PAGES[saved.role]);
-      return;
-    }
-  } catch (_) { /* ignore bad stored data */ }
+  
 
   function showMessage(text, type) {
     message.textContent = text;

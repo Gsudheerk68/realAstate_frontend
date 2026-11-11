@@ -29,8 +29,23 @@
   const message = $('formMessage');
   let role = null;
 
+  // Returns the names of any helper functions that are not available on this page.
+  function missingHelpers() {
+    const missing = [];
+    if (typeof authAPI === 'undefined') missing.push('authAPI');
+    if (typeof setAuthToken !== 'function') missing.push('setAuthToken');
+    if (typeof setUser !== 'function') missing.push('setUser');
+    return missing;
+  }
   function helpersReady() {
-    return typeof authAPI !== 'undefined' && typeof setAuthToken === 'function' && typeof setUser === 'function';
+    const missing = missingHelpers();
+    if (missing.length) {
+      showMessage('Missing from your scripts: ' + missing.join(', ') +
+        '. Add the script tag that defines them to index.html, above landing.js.', 'error');
+      console.error('PlotLine landing: missing helpers ->', missing.join(', '));
+      return false;
+    }
+    return true;
   }
 
   // Already logged in? Go to the right dashboard (same check your old page used).
@@ -108,10 +123,7 @@
   async function onLogin(e) {
     e.preventDefault();
     clearMessage();
-    if (!helpersReady()) {
-      showMessage('The app scripts did not load. Check the script tags in index.html (see the notes).', 'error');
-      return;
-    }
+    if (!helpersReady()) return;
     const email = $('loginEmail').value.trim();
     const password = $('loginPassword').value;
     const okEmail = markInvalid($('loginEmail'), !EMAIL_RE.test(email));
@@ -145,10 +157,7 @@
   async function onSignup(e) {
     e.preventDefault();
     clearMessage();
-    if (!helpersReady()) {
-      showMessage('The app scripts did not load. Check the script tags in index.html (see the notes).', 'error');
-      return;
-    }
+    if (!helpersReady()) return;
     const name = $('signupName').value.trim();
     const email = $('signupEmail').value.trim();
     const phone = $('signupPhone').value.trim();

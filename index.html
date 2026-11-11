@@ -109,7 +109,27 @@
 
   <!-- 1) Keep the SAME <script> tags your old index.html used (the files that define authAPI,
           setAuthToken, setUser, isAuthenticated, getUser), but NOT js/auth.js. Example: -->
-  <script src="js/api.js"></script>
+  <script src="js/api.js">
+    // Redirect if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isAuthenticated()) {
+        const user = getUser();
+        if (user && user.role) {
+          window.location.href = user.role === 'admin' ? 'admin.html' : user.role === 'buyer' ? 'buyer.html' : 'seller.html';
+        }
+      }
+
+      // Enter key on password fields
+      ['bSignupPassword','bLoginPassword','sSignupPassword','sLoginPassword'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            const role = id.startsWith('b') ? 'buyer' : 'seller';
+            const isLogin = id.includes('Login');
+            isLogin ? doLogin(role) : doSignup(role);
+          }
+        });
+  </script>
   <!-- 2) Then this page's script: -->
   <script src="js/landing.js"></script>
 </body>

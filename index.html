@@ -1,9 +1,3 @@
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,97 +106,8 @@
 
     </section>
   </main>
-    <script>
-    // Redirect if already logged in
-    document.addEventListener('DOMContentLoaded', () => {
-      if (isAuthenticated()) {
-        const user = getUser();
-        if (user && user.role) {
-          window.location.href = user.role === 'admin' ? 'admin.html' : user.role === 'buyer' ? 'buyer.html' : 'seller.html';
-        }
-      }
-
-      // Enter key on password fields
-      ['bSignupPassword','bLoginPassword','sSignupPassword','sLoginPassword'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('keypress', e => {
-          if (e.key === 'Enter') {
-            const role = id.startsWith('b') ? 'buyer' : 'seller';
-            const isLogin = id.includes('Login');
-            isLogin ? doLogin(role) : doSignup(role);
-          }
-        });
-      });
-    });
-
-    function switchTab(tab, role) {
-      const prefix = role === 'buyer' ? 'b' : 's';
-      const tabPrefix = role === 'buyer' ? '' : 's';
-      const signupTabId = role === 'buyer' ? 'tabSignup' : 'sTabSignup';
-      const loginTabId  = role === 'buyer' ? 'tabLogin'  : 'sTabLogin';
-      const signupFormId = role === 'buyer' ? 'buyerSignupForm'  : 'sellerSignupForm';
-      const loginFormId  = role === 'buyer' ? 'buyerLoginForm'   : 'sellerLoginForm';
-
-      document.getElementById(signupTabId).classList.toggle('active', tab === 'signup');
-      document.getElementById(loginTabId).classList.toggle('active',  tab === 'login');
-      document.getElementById(signupFormId).style.display = tab === 'signup' ? 'grid' : 'none';
-      document.getElementById(loginFormId).style.display  = tab === 'login'  ? 'grid' : 'none';
-    }
-
-    async function doSignup(role) {
-      const prefix = role === 'buyer' ? 'b' : 's';
-      const name     = document.getElementById(prefix + 'SignupName')?.value.trim();
-      const email    = document.getElementById(prefix + 'SignupEmail')?.value.trim();
-      const phone    = document.getElementById(prefix + 'SignupPhone')?.value.trim();
-      const password = document.getElementById(prefix + 'SignupPassword')?.value;
-
-      if (!name || !email || !phone || !password) {
-        showToast('Please fill in all fields'); return;
-      }
-      if (!/^[\w\.-]+@[\w\.-]+\.\w+$/.test(email)) {
-        showToast('Please enter a valid email'); return;
-      }
-      if (!/^\d{10}$/.test(phone.replace(/\D/g, ''))) {
-        showToast('Please enter a valid 10-digit phone'); return;
-      }
-      if (password.length < 6) {
-        showToast('Password must be at least 6 characters'); return;
-      }
-
-      try {
-        const response = await authAPI.signup(name, email, phone, password, role);
-        setAuthToken(response.token);
-        setUser({ id: response.user.id, name: response.user.name, email: response.user.email, role: response.user.role });
-        showToast('Account created! Redirecting…');
-        setTimeout(() => {
-  const r = response.user.role;
-  window.location.href = r === 'admin' ? 'admin.html' : r === 'buyer' ? 'buyer.html' : 'seller.html';
-}, 1200);
-      } catch(err) { console.error(err); }
-    }
-
-    async function doLogin(role) {
-      const prefix = role === 'buyer' ? 'b' : 's';
-      const email    = document.getElementById(prefix + 'LoginEmail')?.value.trim();
-      const password = document.getElementById(prefix + 'LoginPassword')?.value;
-
-      if (!email || !password) { showToast('Please enter email and password'); return; }
-
-      try {
-        const response = await authAPI.login(email, password);
-        setAuthToken(response.token);
-        setUser({ id: response.user.id, name: response.user.name, email: response.user.email, role: response.user.role });
-        showToast('Logged in! Redirecting…');
-      setTimeout(() => {
-  const r = response.user.role;
-  window.location.href = r === 'admin' ? 'admin.html' : r === 'buyer' ? 'buyer.html' : 'seller.html';
-}, 1200);
-      } catch(err) { console.error(err); }
-    }
-  </script>
 
   <script src="js/api.js"></script>
-  
   <script src="js/landing.js"></script>
 </body>
 </html>

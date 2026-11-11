@@ -34,7 +34,6 @@
     const missing = [];
     if (typeof authAPI === 'undefined') missing.push('authAPI');
     if (typeof setAuthToken !== 'function') missing.push('setAuthToken');
-    if (typeof setUser !== 'function') missing.push('setUser');
     return missing;
   }
   function helpersReady() {
@@ -110,9 +109,19 @@
     return (err && err.message && err.message !== 'Failed to fetch') ? err.message : fallback;
   }
 
+  // Your old code removes 'plotline_user' on logout, so that is the key your dashboards read.
+  // If setUser() is not available on this page, store the user under that same key.
+  function storeUser(user) {
+    if (typeof setUser === 'function') {
+      setUser(user);
+    } else {
+      localStorage.setItem('plotline_user', JSON.stringify(user));
+    }
+  }
+
   function saveLogin(response) {
     setAuthToken(response.token);
-    setUser({
+    storeUser({
       id: response.user.id,
       name: response.user.name,
       email: response.user.email,
